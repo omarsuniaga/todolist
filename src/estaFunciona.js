@@ -1,15 +1,12 @@
-import { getBus } from "./firebase";
-import { paradas } from "./paradas";
-
 var map = L.map("map").locate({ setView: true, maxZoom: 18 });
 // Agregar una capa de OpenStreetMap al mapa
 L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
   attribution: "Map data &copy; OpenStreetMap contributors",
   maxZoom: 18,
 }).addTo(map);
-let BusSalida = []; //la coordenada del Punto A
+let BusSalida = [];//la coordenada del Punto A
 let BusLlegada = []; //La coordenada del punto B
-let BusAhora = [];
+let BusAhora = []; 
 let tuUbicacion = [];
 let estaciones = paradas.map((elem) => [elem.coor.lat, elem.coor.lng]);
 // Inicializar la distancia previa como null
@@ -59,7 +56,7 @@ function fixLocation(latlng) {
               }, 1000 * index);
             });
           })
-          .addTo(map);
+          .a ddTo(map);
       });
     });
   }
@@ -169,7 +166,8 @@ for (let i = 0; i < estaciones.length; i++) {
 // Agregamos el objeto L.layerGroup al mapa
 estacionesGroup.addTo(map);
 
-//El turista abre la app
+
+//El turista abre la app 
 //El turista selecciona la ruta de destino
 //La app le indica la parada mas cercana de acuerdo a la ruta y a la ubicacion del turista
 //La app Buscar la guagua de ruta seleccionada
@@ -178,13 +176,120 @@ estacionesGroup.addTo(map);
 //El turista recibe el tiempo estimado para llegar la guagua
 //El turista selecciona que esta embarcado
 //El turista ve el tiempo y la distancia para llegar al destino.
-//Muestra el recorrido en tiempo real de la guagua
+//Muestra el recorrido en tiempo real de la guagua 
 //Mostrar el horario de ida y retorno
-//Promediar el horario y mostrar su efectividad
+//Promediar el horario y mostrar su efectividad 
+
+
 
 //El turista
+
 
 //Desde la vista del conductor
 //El Conductor recibe una alerta de parada en pantalla.
 //El tiempo que dura conductor en la parada
 //calcular el tiempo de la guagua en cada parada*
+
+
+
+
+
+
+
+
+
+
+
+let map = L.map("map").setView([37.7749, -122.4194], 13);
+
+L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+  attribution:
+    'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, ' +
+    '<a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, ' +
+    'Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+  maxZoom: 18,
+  tileSize: 512,
+  zoomOffset: -1,
+}).addTo(map);
+
+let busIcon = L.icon({
+  iconUrl:
+    "https://png.pngtree.com/element_our/20190528/ourmid/pngtree-yellow-bus-icon-image_1140478.jpg",
+  iconSize: [38, 38],
+  iconAnchor: [22, 22],
+});
+
+// Define las coordenadas de las diferentes paradas del bus
+let stops = [
+  { name: "Stop 1", location: [37.7749, -122.4194] },
+  { name: "Stop 2", location: [37.7848, -122.4064] },
+  { name: "Stop 3", location: [37.7894, -122.4118] },
+  { name: "Stop 4", location: [37.7947, -122.4214] },
+  { name: "Stop 5", location: [37.7763, -122.4176] },
+];
+
+let stopMarkers = L.layerGroup();
+
+for (let i = 0; i < stops.length; i++) {
+  let stopMarker = L.marker(stops[i].location).bindPopup(stops[i].name);
+  stopMarkers.addLayer(stopMarker);
+}
+
+stopMarkers.addTo(map);
+
+let currentStopIndex = 0;
+
+// Crea un objeto de la clase L.Routing.control() para generar la ruta entre las paradas
+var routingControl = L.Routing.control({
+  waypoints: stops.map((stop) => L.latLng(stop.location)),
+  routeWhileDragging: true,
+}).addTo(map);
+
+// Crea un marcador en la posición inicial del bus (Estación A)
+let busMarker = L.marker(stops[0].location, {
+  icon: busIcon,
+}).addTo(map);
+let currentStop = 0; // Variable para controlar la parada actual del bus
+let currentDelay = 0; // Variable para controlar el tiempo de espera actual
+
+// Función para mover el marcador entre dos paradas
+function moveMarker(start, end) {
+  // Obtener las coordenadas de la parada de inicio y fin
+  const startCoords = busStops[start].coords;
+  const endCoords = busStops[end].coords;
+
+  // Calcular la distancia entre las dos paradas
+  const distance = startCoords.distanceTo(endCoords);
+
+  // Calcular la duración del viaje en función de la distancia
+  const duration = (distance / busSpeed) * 3600;
+
+  // Crear una animación de movimiento del marcador entre las dos paradas
+  marker
+    .setLatLng(startCoords) // Colocar el marcador en la parada de inicio
+    .animate({
+      // Animación de movimiento del marcador
+      duration: duration * 1000, // Duración de la animación en milisegundos
+      easing: "linear", // Función de interpolación
+      callback: () => {
+        // Función que se ejecuta al finalizar la animación
+        // Incrementar el índice de la parada actual y reiniciar el tiempo de espera
+        currentStop++;
+        currentDelay = 0;
+
+        // Si el bus ha llegado a la última parada, reiniciar la ruta
+        if (currentStop >= busStops.length) {
+          currentStop = 0;
+        }
+
+        // Esperar 10 segundos antes de pasar a la siguiente parada
+        setTimeout(() => {
+          moveMarker(currentStop, (currentStop + 1) % busStops.length);
+        }, 10000);
+      },
+    })
+    .addTo(map);
+}
+
+// Iniciar la simulación de movimiento del marcador
+moveMarker(currentStop, (currentStop + 1) % busStops.length);s

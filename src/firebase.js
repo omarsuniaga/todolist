@@ -39,38 +39,39 @@ export const auth = getAuth(app);
 export const db = getDatabase(app);
 export const dbRef = ref(getDatabase());
 
-// Since I can connect from multiple devices or browser tabs, we store each connection instance separately
-// any time that connectionsRef's value is null (i.e. has no children) I am offline
-const connectedRef = ref(db, ".info/connected");
-const myConnectionsRef = ref(db, "users/joe/connections");
-
-// stores the timestamp of my last disconnect (the last time I was seen online)
-const lastOnlineRef = ref(db, "users/joe/lastOnline");
-
-onValue(connectedRef, (snap) => {
-  if (snap.val() === true) {
-    // We're connected (or reconnected)! Do anything here that should happen only if online (or on reconnect)
-    const con = push(myConnectionsRef);
-
-    // When I disconnect, remove this device
-    onDisconnect(con).remove();
-
-    // Add this device to my connections list
-    // this value could contain info about the device or a timestamp too
-    set(con, true);
-
-    // When I disconnect, update the last time I was seen online
-    onDisconnect(lastOnlineRef).set(serverTimestamp());
-  }
-});
-
 export const Iniciar_Automaticamente = () => {
   return new Promise((resolve, reject) => {
     onAuthStateChanged(auth, (user) => {
       if (user) {
         resolve(true);
         //go to home
-        // window.location.replace("/home");
+        console.log(user.uid);
+
+        // Since I can connect from multiple devices or browser tabs, we store each connection instance separately
+        // any time that connectionsRef's value is null (i.e. has no children) I am offline
+        const connectedRef = ref(db, ".info/connected");
+        const myConnectionsRef = ref(db, `users/${user.uid}/connections`);
+
+        // stores the timestamp of my last disconnect (the last time I was seen online)
+        const lastOnlineRef = ref(db, `users/${user.uid}/connections`);
+
+        onValue(connectedRef, (snap) => {
+          if (snap.val() === true) {
+            // We're connected (or reconnected)! Do anything here that should happen only if online (or on reconnect)
+            const con = push(myConnectionsRef);
+            console.log("Estoy en Firebase", L);
+
+            // When I disconnect, remove this device
+            onDisconnect(con).remove();
+
+            // Add this device to my connections list
+            // this value could contain info about the device or a timestamp too
+            set(con, true);
+
+            // When I disconnect, update the last time I was seen online
+            onDisconnect(lastOnlineRef).set(serverTimestamp());
+          }
+        });
       } else {
         resolve(false);
       }
@@ -78,7 +79,7 @@ export const Iniciar_Automaticamente = () => {
   });
 };
 
-//Obtener
+//Obtener la data de la tabla Tecnico
 export const getTask = async () => {
   const snapshot = await get(child(ref(db), "Tecnico"));
   if (snapshot.exists()) {
@@ -117,4 +118,44 @@ export const DeleteTask = (task) => {
 // const ObtenerUnaKey = push(child(ref(db), "Tecnico")).key;
 export const CerrarSesion = async () => {
   await signOut(auth);
+};
+// registar las coordenadas del bus
+export const AddBus = async (coor) => {
+  set(ref(db, "Bus/" + coor.id), coor);
+};
+
+AddBus({
+  id: 1,
+  coor: {
+    salida: {
+      lat: 18.683231,
+      lng: -68.451809,
+    },
+    llegada: {
+      lat: 18.687200051247483,
+      lng: -68.44505160419916,
+    },
+    actual: {
+      lat: 18.683231,
+      lng: -68.451809,
+    },
+  },
+});
+
+// Obtener las coordenadas del bus
+export const getBus = async () => {
+  const snapshot = await get(child(ref(db), "Bus"));
+  if (snapshot.exists()) {
+    return snapshot.val();
+  } else {
+    return [];
+  }
+};
+
+// actualizar las coordenadas del bus
+export const UpdateBus = (coor) => {
+  console.log("Update", coor);
+  // const updates = {};
+  // updates["/Bus/" + coor.id] = coor;
+  // return update(ref(db), updates);
 };
