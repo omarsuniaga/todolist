@@ -1,9 +1,10 @@
 import { defineStore } from "pinia";
 import { DeleteTask, AddTask, UpdateTask } from "src/firebase";
-
+import { getPiscinas } from "../firebase";
 export const useTodoStore = defineStore("todos", {
   state: () => ({
     todos: [],
+    piscinas: [],
     menu: false,
   }),
   getters: {
@@ -43,6 +44,11 @@ export const useTodoStore = defineStore("todos", {
     cambiarMenu(value) {
       value === true ? (value = false) : (value = true);
       this.menu = value;
+    },
+    filtrarPiscinas(value) {
+      getPiscinas().then((elem) => {
+        this.piscinas = elem.filter((el) => (el.root === value ? el : null));
+      });
     },
   },
 });

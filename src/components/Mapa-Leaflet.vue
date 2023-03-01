@@ -1,6 +1,3 @@
-<template>
-  <div id="map" class="map" style="height: 700px; padding: 10px, 12px"></div>
-</template>
 <script setup>
 import { onMounted, ref } from "vue";
 import L from "leaflet";
@@ -66,3 +63,6 @@ navigator.geolocation.getCurrentPosition(function (position) {
   }).addTo(map);
 });
 </script>
+<template>
+  <div id="map" class="map" style="height: 700px; padding: 10px, 12px"></div>
+</template>

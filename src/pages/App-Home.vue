@@ -3,7 +3,6 @@ import { computed, watchEffect, onMounted } from "vue";
 import { useTodoStore } from "../stores/todo";
 import { ref, onValue } from "firebase/database";
 import { db } from "../firebase";
-import MapaLeaflet from "../components/Mapa-Leaflet.vue";
 const store = useTodoStore();
 const todos = computed(() => store.todos);
 onMounted(() => {
@@ -22,7 +21,6 @@ watchEffect(async () => {
 });
 </script>
 <template>
-  <MapaLeaflet />
   <q-list>
     <q-item v-for="todo in todos" :key="todo.id" class="grid">
       <q-card

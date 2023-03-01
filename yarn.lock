@@ -3848,7 +3848,14 @@
     "@mapbox/polyline" "^0.2.0"
     "osrm-text-instructions" "^0.13.2"
 
-"leaflet@^1.9.3":
+"leaflet-search@^3.0.9":
+  "integrity" "sha512-Jg6b9pwYNAeo67VxRKOunzH5BicscmG0Zp9sjyV2dO+lWEV+eq5N13H+q5vtTA9jcYCriOX1EN4UUxhVUs8n3g=="
+  "resolved" "https://registry.npmjs.org/leaflet-search/-/leaflet-search-3.0.9.tgz"
+  "version" "3.0.9"
+  dependencies:
+    "leaflet" "*"
+
+"leaflet@*", "leaflet@^1.9.3":
   "integrity" "sha512-iB2cR9vAkDOu5l3HAay2obcUHZ7xwUBBjph8+PGtmW/2lYhbLizWtG7nTeYht36WfOslixQF9D/uSIzhZgGMfQ=="
   "resolved" "https://registry.npmjs.org/leaflet/-/leaflet-1.9.3.tgz"
   "version" "1.9.3"

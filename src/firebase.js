@@ -45,7 +45,7 @@ export const Iniciar_Automaticamente = () => {
       if (user) {
         resolve(true);
         //go to home
-        console.log(user.uid);
+        // console.log(user.uid);
 
         // Since I can connect from multiple devices or browser tabs, we store each connection instance separately
         // any time that connectionsRef's value is null (i.e. has no children) I am offline
@@ -59,7 +59,6 @@ export const Iniciar_Automaticamente = () => {
           if (snap.val() === true) {
             // We're connected (or reconnected)! Do anything here that should happen only if online (or on reconnect)
             const con = push(myConnectionsRef);
-            console.log("Estoy en Firebase", L);
 
             // When I disconnect, remove this device
             onDisconnect(con).remove();
@@ -154,8 +153,27 @@ export const getBus = async () => {
 
 // actualizar las coordenadas del bus
 export const UpdateBus = (coor) => {
-  console.log("Update", coor);
+  // console.log("Update", coor);
   // const updates = {};
   // updates["/Bus/" + coor.id] = coor;
   // return update(ref(db), updates);
+};
+
+//getRutas
+export const getRutas = async () => {
+  const snapshot = await get(child(ref(db), "Rutas"));
+  if (snapshot.exists()) {
+    return snapshot.val();
+  } else {
+    return [];
+  }
+};
+
+export const getPiscinas = async () => {
+  const snapshot = await get(child(ref(db), "Piscinas"));
+  if (snapshot.exists()) {
+    return snapshot.val();
+  } else {
+    return [];
+  }
 };
