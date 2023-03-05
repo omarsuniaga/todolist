@@ -17,10 +17,48 @@
   <div class="q-pa-md">
     <q-scroll-area style="height: 220px; max-width: 100vw">
       <div class="row no-wrap">
-        <div v-for="n in 10" :key="n" style="width: 150px" class="q-pa-sm">
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Architecto
-          fuga quae veritatis blanditiis sequi id expedita amet esse aspernatur!
-          Iure, doloribus!
+        <div
+          v-for="(product, index) in products"
+          :key="index"
+          style="width: 150px"
+          class="q-pa-sm"
+        >
+          <q-card class="my-card" flat bordered>
+            <q-img src="https://cdn.quasar.dev/img/parallax2.jpg" />
+
+            <q-card-section>
+              <div class="text-overline text-orange-9">Accidos</div>
+              <div class="text-h5 q-mt-sm q-mb-xs">{{ product.name }}</div>
+              <div class="text-caption text-grey">
+                Cantidad del producto usado
+              </div>
+            </q-card-section>
+
+            <q-card-actions>
+              <q-btn flat color="dark" label="Share" />
+              <q-btn flat color="primary" label="Book" />
+
+              <q-space />
+
+              <q-btn
+                color="grey"
+                round
+                flat
+                dense
+                :icon="expanded ? 'keyboard_arrow_up' : 'keyboard_arrow_down'"
+                @click="expanded = !expanded"
+              />
+            </q-card-actions>
+
+            <q-slide-transition>
+              <div v-show="expanded">
+                <q-separator />
+                <q-card-section class="text-subitle2">
+                  {{ lorem }}
+                </q-card-section>
+              </div>
+            </q-slide-transition>
+          </q-card>
         </div>
       </div>
     </q-scroll-area>
@@ -31,32 +69,19 @@
 import { ref, onMounted } from "vue";
 import { searchPiscina, getProducts } from "src/firebase";
 import { useRouter } from "vue-router";
-import { provideDocumentSymbols } from "vls";
 let piscina = ref({});
+const expanded = ref(false);
 let products = ref([]);
 const id = useRouter().currentRoute._rawValue.params.id;
 onMounted(async () => {
   piscina.value = await searchPiscina(id);
-  // products.value = await getProducts();
-  console.log(products.value);
+  let { accidos, limpieza } = await getProducts();
+  products.value = [...accidos, ...limpieza];
 });
 </script>
-<style>
-body {
-  background: linear-gradient(to bottom, #87cefa 0%, #1e90ff 100%);
-  background-size: 100% 100%;
-  animation: waves 10s ease-in-out infinite;
-}
 
-@keyframes waves {
-  0% {
-    transform: rotate(0deg);
-  }
-  50% {
-    transform: rotate(15deg);
-  }
-  100% {
-    transform: rotate(0deg);
-  }
-}
+<style lang="sass" scoped>
+.my-card
+  width: 100%
+  max-width: 350px
 </style>

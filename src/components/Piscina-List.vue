@@ -77,8 +77,6 @@ const gps = (coor) => {
 
 const piscinas_pendientes = (data) => {
   data.state = false;
-  data.commit = "Pendiente...";
-  data.products = ["Esto", "Es", "un", "Array"];
   store.addDailyReport(data);
 };
 </script>

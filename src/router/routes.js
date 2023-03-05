@@ -14,13 +14,14 @@ const routes = [
     meta: { requiresAuth: true },
   },
   {
-    path: "/profile/:id",
     name: "profile",
+    path: "/profile",
     props: true,
     component: () => import("layouts/MainLayout.vue"),
     children: [
       {
-        path: "",
+        name: "profileChild",
+        path: "/profile/:id",
         component: () => import("src/pages/App-Profile-Piscina.vue"),
       },
     ],
