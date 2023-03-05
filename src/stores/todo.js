@@ -64,5 +64,8 @@ export const useTodoStore = defineStore("todos", {
         setDailyReports(data); // almacena en la DB
       }
     },
+    addProductsUsed(id, data) {
+      setDailyReports(id, data);
+    },
   },
 });

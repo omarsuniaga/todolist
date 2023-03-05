@@ -15,7 +15,7 @@
     </div>
   </div>
   <div class="q-pa-md">
-    <q-scroll-area style="height: 220px; max-width: 100vw">
+    <q-scroll-area style="height: 100vh; max-width: 100vw">
       <div class="row no-wrap">
         <div
           v-for="(product, index) in products"
@@ -28,15 +28,32 @@
 
             <q-card-section>
               <div class="text-overline text-orange-9">Accidos</div>
-              <div class="text-h5 q-mt-sm q-mb-xs">{{ product.name }}</div>
+              <div class="text-h6 q-mt-sm q-mb-xs">{{ product.name }}</div>
               <div class="text-caption text-grey">
-                Cantidad del producto usado
+                <q-input
+                  v-model="product.amount"
+                  type="number"
+                  label="Cantidad"
+                  rounded
+                  standout
+                />
+                <q-select
+                  rounded
+                  standout
+                  v-model="product.unit"
+                  :options="options"
+                  label="Rounded standout"
+                />
               </div>
             </q-card-section>
 
             <q-card-actions>
-              <q-btn flat color="dark" label="Share" />
-              <q-btn flat color="primary" label="Book" />
+              <q-btn
+                flat
+                color="dark"
+                label="Guardar"
+                @click="guardar(product)"
+              />
 
               <q-space />
 
@@ -54,7 +71,7 @@
               <div v-show="expanded">
                 <q-separator />
                 <q-card-section class="text-subitle2">
-                  {{ lorem }}
+                  {{ product.description }}
                 </q-card-section>
               </div>
             </q-slide-transition>
@@ -69,19 +86,30 @@
 import { ref, onMounted } from "vue";
 import { searchPiscina, getProducts } from "src/firebase";
 import { useRouter } from "vue-router";
+import { useTodoStore } from "../stores/todo";
+
 let piscina = ref({});
-const expanded = ref(false);
 let products = ref([]);
+let productos = [];
+const expanded = ref(false);
 const id = useRouter().currentRoute._rawValue.params.id;
+const options = ref(["ml", "mg"]);
+const store = useTodoStore();
+
+const guardar = (data) => {
+  let { root, coor, img } = piscina.value; //datos de la piscina
+  let { amount, unit } = data; //datos del producto
+  productos.push({ cantidad: `${amount} ${unit} `, producto: data.name });
+  data.productos = productos;
+  data.root = root;
+  data.coor = coor;
+  data.img = img;
+  store.addProductsUsed(id, data);
+};
+
 onMounted(async () => {
   piscina.value = await searchPiscina(id);
   let { accidos, limpieza } = await getProducts();
   products.value = [...accidos, ...limpieza];
 });
 </script>
-
-<style lang="sass" scoped>
-.my-card
-  width: 100%
-  max-width: 350px
-</style>

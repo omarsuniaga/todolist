@@ -194,8 +194,8 @@ export const getPiscinas = async () => {
   }
 };
 //Obtiene los reportes diarios
-export const getDailyReports = async () => {
-  const snapshot = await get(child(ref(db), "AsistenciaDiaria"));
+export const getDailyReports = async (id) => {
+  const snapshot = await get(child(ref(db), `AsistenciaDiaria/${id - 1}`));
   if (snapshot.exists()) {
     return snapshot.val();
   } else {
@@ -204,8 +204,8 @@ export const getDailyReports = async () => {
 };
 
 // Almacenar los reportes diarios
-export const setDailyReports = async (data) => {
-  set(ref(db, `AsistenciaDiaria/${getDate().toString()}/` + data.id), data);
+export const setDailyReports = async (id, data) => {
+  set(ref(db, `AsistenciaDiaria/${getDate().toString()}/${id}`), data);
 };
 
 // search piscina
