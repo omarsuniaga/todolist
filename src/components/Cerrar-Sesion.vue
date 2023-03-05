@@ -10,8 +10,7 @@ import { CerrarSesion } from "../firebase";
 const router = useRouter();
 const Salir = () => {
   CerrarSesion().then(() => {
-    console.log("Usuario Deslogeado");
-    router.push("/");
+    router.replace("/login");
   });
 };
 </script>

@@ -1,6 +1,5 @@
 <script setup>
 import {
-  getAuth,
   signInWithPopup,
   GoogleAuthProvider,
   signInWithEmailAndPassword,
@@ -18,7 +17,7 @@ const login = async () => {
     // Iniciar sesión con username y password
     await signInWithEmailAndPassword(auth, email.value, password.value);
     // Redireccionar a la página principal después de iniciar sesión
-    router.push("/Home");
+    router.push("/");
   } catch (error) {
     const errorCode = error.code;
     const errorMessage = error.message;
@@ -28,38 +27,35 @@ const login = async () => {
 
 const loginGoogle = async () => {
   try {
-    // Iniciar sesión con Google
-    const auth = getAuth();
     const provider = new GoogleAuthProvider();
-    await signInWithPopup(auth, provider);
-    // Redireccionar a la página principal después de iniciar sesión
-    this.$router.push("/");
+    signInWithPopup(auth, provider)
+      .then((result) => {
+        const credential = GoogleAuthProvider.credentialFromResult(result);
+        const token = credential.accessToken;
+        const user = result.user;
+        console.log("user", user, token, credential);
+        router.replace("/");
+      })
+      .catch((error) => {
+        console.log("error", errorCode);
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        console.log("error", errorMessage);
+        const email = error.customData.email;
+        const credential = GoogleAuthProvider.credentialFromError(error);
+      });
   } catch (error) {
     console.error(error);
   }
 };
 
-onMounted(() => {
-  // loginGoogle();
-});
+onMounted(() => {});
 </script>
 
 <template>
-  <!-- <q-form @submit.prevent="submitForm">
-    <q-input outlined v-model="email" type="email" label="Email" required />
-    <q-input
-      outlined
-      v-model="password"
-      type="password"
-      label="Password"
-      required
-    />
-    <q-btn type="submit" color="primary" label="Submit" />
-  </q-form> -->
-
   <div class="login">
     <h1>Login</h1>
-    <form @submit.prevent="login">
+    <form @submit.prevent="login()">
       <input
         type="text"
         name="u"
@@ -74,12 +70,15 @@ onMounted(() => {
         required="required"
         v-model="password"
       />
-      <button @click="loginGoogle" class="btn btn-primary btn-block btn-large">
+      <button
+        @click="loginGoogle()"
+        class="btn btn-primary btn-block btn-large"
+      >
         Google
       </button>
       <button
         type="submit"
-        @click="login"
+        @click="login()"
         class="btn btn-primary btn-block btn-large"
       >
         Iniciar Sesion
@@ -97,7 +96,7 @@ onMounted(() => {
   height: 300px;
 }
 .login h1 {
-  color: #fff;
+  color: #353d93;
   text-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
   letter-spacing: 1px;
   text-align: center;
@@ -106,25 +105,15 @@ onMounted(() => {
 input {
   width: 100%;
   margin-bottom: 10px;
-  background: rgba(0, 0, 0, 0.3);
-  border: none;
-  outline: none;
+  background: rgba(124, 227, 235, 0.3);
   padding: 10px;
   font-size: 13px;
-  color: #fff;
+  color: #000000;
   text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.3);
   border: 1px solid rgba(0, 0, 0, 0.3);
-  border-radius: 4px;
-  box-shadow: inset 0 -5px 45px rgba(100, 100, 100, 0.2),
-    0 1px 1px rgba(255, 255, 255, 0.2);
-  -webkit-transition: box-shadow 0.5s ease;
-  -moz-transition: box-shadow 0.5s ease;
-  -o-transition: box-shadow 0.5s ease;
-  -ms-transition: box-shadow 0.5s ease;
-  transition: box-shadow 0.5s ease;
 }
 input:focus {
-  box-shadow: inset 0 -5px 45px rgba(100, 100, 100, 0.4),
-    0 1px 1px rgba(255, 255, 255, 0.2);
+  box-shadow: inset 0 -5px 45px rgba(44, 0, 243, 0.4),
+    0 1px 1px rgba(58, 161, 212, 0.2);
 }
 </style>

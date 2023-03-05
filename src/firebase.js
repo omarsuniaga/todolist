@@ -23,6 +23,15 @@ import {
   signOut,
 } from "firebase/auth";
 
+// get date current
+export const getDate = () => {
+  const date = new Date();
+  const day = date.getDate();
+  const month = date.getMonth() + 1;
+  const year = date.getFullYear();
+  return `${day}-${month}-${year}`;
+};
+
 const firebaseConfig = {
   apiKey: "AIzaSyDF6xF2CqeQTmH7LN2qs65TWt4WQBmzqYc",
   authDomain: "poolserviceteam-34c3a.firebaseapp.com",
@@ -36,6 +45,7 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 
 export const auth = getAuth(app);
+auth.languageCode = "es";
 export const db = getDatabase(app);
 export const dbRef = ref(getDatabase());
 
@@ -123,23 +133,23 @@ export const AddBus = async (coor) => {
   set(ref(db, "Bus/" + coor.id), coor);
 };
 
-AddBus({
-  id: 1,
-  coor: {
-    salida: {
-      lat: 18.683231,
-      lng: -68.451809,
-    },
-    llegada: {
-      lat: 18.687200051247483,
-      lng: -68.44505160419916,
-    },
-    actual: {
-      lat: 18.683231,
-      lng: -68.451809,
-    },
-  },
-});
+// AddBus({
+//   id: 1,
+//   coor: {
+//     salida: {
+//       lat: 18.683231,
+//       lng: -68.451809,
+//     },
+//     llegada: {
+//       lat: 18.687200051247483,
+//       lng: -68.44505160419916,
+//     },
+//     actual: {
+//       lat: 18.683231,
+//       lng: -68.451809,
+//     },
+//   },
+// });
 
 // Obtener las coordenadas del bus
 export const getBus = async () => {
@@ -159,6 +169,12 @@ export const UpdateBus = (coor) => {
   // return update(ref(db), updates);
 };
 
+/************************************* POOL SERVICE TEAM *******************************************/
+//generar auto id
+export const generateId = () => {
+  return push(child(ref(db), "Piscina")).key;
+};
+
 //getRutas
 export const getRutas = async () => {
   const snapshot = await get(child(ref(db), "Rutas"));
@@ -168,9 +184,43 @@ export const getRutas = async () => {
     return [];
   }
 };
-
+//Obtiene todas las piscinas registradas
 export const getPiscinas = async () => {
   const snapshot = await get(child(ref(db), "Piscinas"));
+  if (snapshot.exists()) {
+    return snapshot.val();
+  } else {
+    return [];
+  }
+};
+//Obtiene los reportes diarios
+export const getDailyReports = async () => {
+  const snapshot = await get(child(ref(db), "AsistenciaDiaria"));
+  if (snapshot.exists()) {
+    return snapshot.val();
+  } else {
+    return [];
+  }
+};
+
+// Almacenar los reportes diarios
+export const setDailyReports = async (data) => {
+  set(ref(db, `AsistenciaDiaria/${getDate().toString()}/` + data.id), data);
+};
+
+// search piscina
+export const searchPiscina = async (id) => {
+  const snapshot = await get(child(ref(db), `Piscinas/${id - 1}`));
+  if (snapshot.exists()) {
+    return snapshot.val();
+  } else {
+    return [];
+  }
+};
+
+// get products
+export const getProducts = async () => {
+  const snapshot = await get(child(ref(db), "Productos"));
   if (snapshot.exists()) {
     return snapshot.val();
   } else {

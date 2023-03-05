@@ -5,18 +5,12 @@
 <script setup></script>
 <style>
 body {
-  background: #0f0c29; /* fallback for old browsers */
-  background: -webkit-linear-gradient(
-    to right,
-    #1b1b29,
-    #134255,
-    #1b1b29
-  ); /* Chrome 10-25, Safari 5.1-6 */
-  background: linear-gradient(
-    to right,
-    #1b1b29,
-    #134255,
-    #1b1b29
-  ); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+  background: rgb(255, 255, 255);
+  background: radial-gradient(
+    circle,
+    rgba(255, 255, 255, 1) 0%,
+    rgba(120, 227, 240, 1) 50%,
+    rgba(0, 65, 65, 1) 100%
+  );
 }
 </style>

@@ -1,15 +1,28 @@
 const routes = [
   {
-    path: "/",
+    path: "/login",
     name: "login",
     component: () => import("src/pages/App-Login.vue"),
   },
   {
-    path: "/home",
+    path: "/",
     name: "home",
     component: () => import("layouts/MainLayout.vue"),
     children: [
-      { path: "/home", component: () => import("src/pages/Home-Cliente.vue") },
+      { path: "/", component: () => import("src/pages/Home-Cliente.vue") },
+    ],
+    meta: { requiresAuth: true },
+  },
+  {
+    path: "/profile/:id",
+    name: "profile",
+    props: true,
+    component: () => import("layouts/MainLayout.vue"),
+    children: [
+      {
+        path: "",
+        component: () => import("src/pages/App-Profile-Piscina.vue"),
+      },
     ],
     meta: { requiresAuth: true },
   },
