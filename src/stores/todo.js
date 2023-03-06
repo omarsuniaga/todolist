@@ -64,8 +64,15 @@ export const useTodoStore = defineStore("todos", {
         setDailyReports(data); // almacena en la DB
       }
     },
-    addProductsUsed(id, data) {
-      setDailyReports(id, data);
+    //guardar los productos usados en la piscina
+    addProductsUsed(data) {
+      console.log("Desde Pinia: ", data);
+      setDailyReports(data);
+    },
+    //Obtiene los productos usados en la piscina
+    getProductsUsed(name) {
+      console.log("Desde Pinia: ", name);
+      return getDailyReports(name);
     },
   },
 });
